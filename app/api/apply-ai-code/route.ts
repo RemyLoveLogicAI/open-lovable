@@ -582,7 +582,7 @@ if result.stderr:
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               missingImports,
-              model: 'claude-sonnet-4-20250514'
+              model: 'google/gemini-2.5-pro-latest'
             })
           }
         );
