@@ -5,6 +5,7 @@ import { createOpenAI } from '@ai-sdk/openai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateObject } from 'ai';
 import { z } from 'zod';
+import { appConfig } from '@/config/app.config';
 import type { FileManifest } from '@/types/file-manifest';
 
 const groq = createGroq({
@@ -55,7 +56,7 @@ const searchPlanSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    const { prompt, manifest, model = 'google/gemini-2.5-pro-latest' } = await request.json();
+    const { prompt, manifest, model = appConfig.ai.defaultModel } = await request.json();
     
     console.log('[analyze-edit-intent] Request received');
     console.log('[analyze-edit-intent] Prompt:', prompt);
@@ -104,11 +105,9 @@ export async function POST(request: NextRequest) {
     } else if (model.startsWith('anthropic/')) {
       aiModel = anthropic(model.replace('anthropic/', ''));
     } else if (model.startsWith('openai/')) {
-      if (model.includes('gpt-oss')) {
-        aiModel = groq(model);
-      } else {
-        aiModel = openai(model.replace('openai/', ''));
-      }
+      aiModel = openai(model.replace('openai/', ''));
+    } else if (model.startsWith('groq/')) {
+      aiModel = groq(model.replace('groq/', ''));
     } else {
       // Default to groq if model format is unclear
       aiModel = groq(model);

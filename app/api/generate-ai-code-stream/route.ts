@@ -677,16 +677,6 @@ ONLY OUTPUT THE EXACT FILES LISTED IN "Files to Edit".
 VIOLATION OF THESE RULES WILL RESULT IN FAILURE!
 ` : ''}
 
-CRITICAL INCREMENTAL UPDATE RULES:
-- When the user asks for additions or modifications (like "add a videos page", "create a new component", "update the header"):
-  - DO NOT regenerate the entire application
-  - DO NOT recreate files that already exist unless explicitly asked
-  - ONLY create/modify the specific files needed for the requested change
-  - Preserve all existing functionality and files
-  - If adding a new page/route, integrate it with the existing routing system
-  - Reference existing components and styles rather than duplicating them
-  - NEVER recreate config files (tailwind.config.js, vite.config.js, package.json, etc.)
-
 IMPORTANT: When the user asks for edits or modifications:
 - You have access to the current file contents in the context
 - Make targeted changes to existing files rather than regenerating everything
@@ -743,16 +733,6 @@ CRITICAL STYLING RULES - MUST FOLLOW:
   - For borders: use "border-gray-200", "border-gray-300", etc. NOT "border-border"
   - For backgrounds: use "bg-white", "bg-gray-100", etc. NOT "bg-background"
   - For text: use "text-gray-900", "text-black", etc. NOT "text-foreground"
-- Examples of good Tailwind usage:
-  - Buttons: className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 hover:shadow-lg transform hover:scale-105 transition-all duration-200"
-  - Cards: className="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-xl transition-shadow duration-300"
-  - Full-width sections: className="w-full px-4 sm:px-6 lg:px-8"
-  - Constrained content (only when needed): className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-  - Dark backgrounds: className="min-h-screen bg-gray-900 text-white"
-  - Hero sections: className="animate-fade-in-up"
-  - Feature cards: className="transform hover:scale-105 transition-transform duration-300"
-  - CTAs: className="animate-pulse hover:animate-none"
-
 CRITICAL STRING AND SYNTAX RULES:
 - ALWAYS escape apostrophes in strings: use \' instead of ' or use double quotes
 - ALWAYS escape quotes properly in JSX attributes
@@ -1155,19 +1135,21 @@ CRITICAL: When files are provided in the context:
         
         // Determine which provider to use based on model
         const isAnthropic = model.startsWith('anthropic/');
-        const isOpenAI = model.startsWith('openai/gpt-5');
+        const isOpenAI = model.startsWith('openai/');
         const isGoogle = model.startsWith('google/');
+        const isGroq = model.startsWith('groq/');
         const modelProvider = isGoogle ? google : (isAnthropic ? anthropic : (isOpenAI ? openai : groq));
         const actualModel = isGoogle ? model.replace('google/', '') :
-                           (isAnthropic ? model.replace('anthropic/', '') : 
-                           (model === 'openai/gpt-5') ? 'gpt-5' : model);
+                           (isAnthropic ? model.replace('anthropic/', '') :
+                           (isOpenAI ? model.replace('openai/', '') :
+                           (isGroq ? model.replace('groq/', '') : model)));
         
         // Make streaming API call with appropriate provider
         const streamOptions: any = {
           model: modelProvider(actualModel),
           messages: [
-            { 
-              role: 'system', 
+            {
+              role: 'system',
               content: systemPrompt + `
 
 🚨 CRITICAL CODE GENERATION RULES - VIOLATION = FAILURE 🚨:
@@ -1178,51 +1160,18 @@ CRITICAL: When files are provided in the context:
 5. ALWAYS close ALL tags, quotes, brackets, and parentheses
 6. If you run out of space, prioritize completing the current file
 
-CRITICAL STRING RULES TO PREVENT SYNTAX ERRORS:
-- NEVER write: className="px-8 py-4 bg-black text-white font-bold neobrut-border neobr...
-- ALWAYS write: className="px-8 py-4 bg-black text-white font-bold neobrut-border neobrut-shadow"
-- COMPLETE every className attribute
-- COMPLETE every string literal
+CRITICAL STRING RULES:
+- COMPLETE every className attribute and string literal
 - NO ellipsis (...) ANYWHERE in code
 
 PACKAGE RULES:
 - For INITIAL generation: Use ONLY React, no external packages
 - For EDITS: You may use packages, specify them with <package> tags
-- NEVER install packages like @mendable/firecrawl-js unless explicitly requested
-
-Examples of SYNTAX ERRORS (NEVER DO THIS):
-❌ className="px-4 py-2 bg-blue-600 hover:bg-blue-7...
-❌ <button className="btn btn-primary btn-...
-❌ const title = "Welcome to our...
-❌ import { useState, useEffect, ... } from 'react'
-
-Examples of CORRECT CODE (ALWAYS DO THIS):
-✅ className="px-4 py-2 bg-blue-600 hover:bg-blue-700"
-✅ <button className="btn btn-primary btn-large">
-✅ const title = "Welcome to our application"
-✅ import { useState, useEffect, useCallback } from 'react'
-
-REMEMBER: It's better to generate fewer COMPLETE files than many INCOMPLETE files.`
+- NEVER install packages like @mendable/firecrawl-js unless explicitly requested`
             },
-            { 
-              role: 'user', 
-              content: fullPrompt + `
-
-CRITICAL: You MUST complete EVERY file you start. If you write:
-<file path="src/components/Hero.jsx">
-
-You MUST include the closing </file> tag and ALL the code in between.
-
-NEVER write partial code like:
-<h1>Build and deploy on the AI Cloud.</h1>
-<p>Some text...</p>  ❌ WRONG
-
-ALWAYS write complete code:
-<h1>Build and deploy on the AI Cloud.</h1>
-<p>Some text here with full content</p>  ✅ CORRECT
-
-If you're running out of space, generate FEWER files but make them COMPLETE.
-It's better to have 3 complete files than 10 incomplete files.`
+            {
+              role: 'user',
+              content: fullPrompt
             }
           ],
           maxOutputTokens: 8192, // Reduce to ensure completion
@@ -1248,7 +1197,7 @@ It's better to have 3 complete files than 10 incomplete files.`
         }
         
         // Add reasoning effort for GPT-5 models
-        if (isOpenAI) {
+        if (model === 'openai/gpt-5') {
           streamOptions.experimental_providerMetadata = {
             openai: {
               reasoningEffort: 'high'
@@ -1606,9 +1555,12 @@ Provide the complete file content without any truncation. Include all necessary 
                 } else if (isAnthropic) {
                   completionClient = anthropic;
                   completionModel = model.replace('anthropic/', '');
-                } else if (model === 'openai/gpt-5') {
+                } else if (isOpenAI) {
                   completionClient = openai;
-                  completionModel = 'gpt-5';
+                  completionModel = model.replace('openai/', '');
+                } else if (isGroq) {
+                  completionClient = groq;
+                  completionModel = model.replace('groq/', '');
                 } else {
                   completionClient = groq;
                   completionModel = model;

@@ -28,24 +28,22 @@ export const appConfig = {
   // AI Model Configuration
   ai: {
     // Default AI model
-    defaultModel: 'google/gemini-2.5-pro-latest',
-    
+    defaultModel: 'groq/llama-3.3-70b-versatile',
+
     // Available models
     availableModels: [
+      'groq/llama-3.3-70b-versatile',
+      'groq/llama-3.1-8b-instant',
       'google/gemini-2.5-pro-latest',
-      'google/gemini-2.0-flash',
-      'openai/gpt-5',
-      'moonshotai/kimi-k2-instruct',
-      'anthropic/claude-sonnet-4-20250514'
+      'google/gemini-2.0-flash'
     ],
-    
+
     // Model display names
     modelDisplayNames: {
+      'groq/llama-3.3-70b-versatile': 'Groq Llama 3.3 70B',
+      'groq/llama-3.1-8b-instant': 'Groq Llama 3.1 8B',
       'google/gemini-2.5-pro-latest': 'Gemini 2.5 Pro',
-      'google/gemini-2.0-flash': 'Gemini 2.0 Flash',
-      'openai/gpt-5': 'GPT-5',
-      'moonshotai/kimi-k2-instruct': 'Kimi K2 Instruct',
-      'anthropic/claude-sonnet-4-20250514': 'Sonnet 4'
+      'google/gemini-2.0-flash': 'Gemini 2.0 Flash'
     } as Record<string, string>,
     
     // Temperature settings for non-reasoning models
