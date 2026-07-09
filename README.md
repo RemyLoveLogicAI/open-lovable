@@ -6,7 +6,9 @@ Chat with AI to build React apps instantly.
 
 ## Live Demo
 
-The app is running locally and a public tunnel is pending `deploy expose` approval. Once approved, the URL will be added here.
+Public demo: `https://open-lovable-devin.loca.lt`
+
+If the browser shows a localtunnel password page, enter `52.183.72.253`.
 
 
 <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmZtaHFleGRsMTNlaWNydGdianI4NGQ4dHhyZjB0d2VkcjRyeXBucCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ZFVLWMa6dVskQX0qu1/giphy.gif" alt="Open Lovable Demo" width="100%"/>
