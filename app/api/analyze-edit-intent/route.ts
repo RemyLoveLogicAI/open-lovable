@@ -2,8 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createGroq } from '@ai-sdk/groq';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { createOpenAI } from '@ai-sdk/openai';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { generateObject } from 'ai';
 import { z } from 'zod';
+import { appConfig } from '@/config/app.config';
 import type { FileManifest } from '@/types/file-manifest';
 
 const groq = createGroq({
@@ -18,6 +20,10 @@ const anthropic = createAnthropic({
 const openai = createOpenAI({
   apiKey: process.env.OPENAI_API_KEY,
   baseURL: process.env.OPENAI_BASE_URL,
+});
+
+const google = createGoogleGenerativeAI({
+  apiKey: process.env.GOOGLE_API_KEY,
 });
 
 // Schema for the AI's search plan - not file selection!
@@ -50,7 +56,7 @@ const searchPlanSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
-    const { prompt, manifest, model = 'openai/gpt-oss-20b' } = await request.json();
+    const { prompt, manifest, model = appConfig.ai.defaultModel } = await request.json();
     
     console.log('[analyze-edit-intent] Request received');
     console.log('[analyze-edit-intent] Prompt:', prompt);
@@ -94,14 +100,14 @@ export async function POST(request: NextRequest) {
     
     // Select the appropriate AI model based on the request
     let aiModel;
-    if (model.startsWith('anthropic/')) {
+    if (model.startsWith('google/')) {
+      aiModel = google(model.replace('google/', ''));
+    } else if (model.startsWith('anthropic/')) {
       aiModel = anthropic(model.replace('anthropic/', ''));
     } else if (model.startsWith('openai/')) {
-      if (model.includes('gpt-oss')) {
-        aiModel = groq(model);
-      } else {
-        aiModel = openai(model.replace('openai/', ''));
-      }
+      aiModel = openai(model.replace('openai/', ''));
+    } else if (model.startsWith('groq/')) {
+      aiModel = groq(model.replace('groq/', ''));
     } else {
       // Default to groq if model format is unclear
       aiModel = groq(model);

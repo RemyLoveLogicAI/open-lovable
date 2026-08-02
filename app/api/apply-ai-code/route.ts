@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { appConfig } from '@/config/app.config';
 import type { SandboxState } from '@/types/sandbox';
 import type { ConversationState } from '@/types/conversation';
 
@@ -582,7 +583,7 @@ if result.stderr:
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               missingImports,
-              model: 'claude-sonnet-4-20250514'
+              model: appConfig.ai.defaultModel
             })
           }
         );

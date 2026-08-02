@@ -1,0 +1,124 @@
+# 📚 open-lovable Documentation
+
+Welcome to the complete documentation for this repository. This documentation is automatically generated and maintained by Woden Docbot.
+
+![Health: Healthy](https://img.shields.io/badge/Health-Healthy-green) ![Files Documented: 5](https://img.shields.io/badge/Files_Documented-5-blue) ![Coverage: 100](https://img.shields.io/badge/Coverage-100-green) ![Last Updated: 2026-07-09](https://img.shields.io/badge/Last_Updated-2026--07--09-gray)
+
+## 🔗 Quick Links
+
+[📂 app](./app/README.md) | [📂 config](./config/README.md)
+[📋 Dependencies](./DEPENDENCIES.md)
+
+
+---
+
+> A Next.js front-end and colocated TypeScript API surface for AI-driven code analysis, code change application, and streaming code generation.
+
+
+
+## 📖 Overview
+
+open-lovable is a Next.js application that provides a user-facing page and a set of colocated TypeScript API routes to perform AI-driven code analysis, apply code changes, and stream generated code. The UI entry point (page.tsx) renders the primary route and interacts with backend endpoints implemented under the app/api directory.
+
+Configuration and runtime options are centralized in a single TypeScript configuration file (app.config.ts). The appConfig object drives feature flags, AI model options, sandbox and file handling behavior, UI toggles, and API endpoint settings so the page and API routes share a consistent configuration surface.
+
+
+### 🧩 Key Components
+
+| Component | Purpose | Technologies |
+| --- | --- | --- |
+| **app (UI page)** | The Next.js page implementation (page.tsx) that defines the primary user-facing route and client/server boot logic for the application UI. | `Next.js`, `TypeScript` |
+| **app/api (grouped API routes)** | A set of feature-organized TypeScript route implementations under app/api that provide AI-driven code analysis, application of code changes, and streaming code generation endpoints consumed by the UI. | `Next.js`, `TypeScript` |
+| **config (app.config.ts)** | A centralized TypeScript configuration object (appConfig) that defines runtime and build-time settings such as sandbox behavior, AI model options, UI flags, file handling, and API endpoint configuration. | `TypeScript` |
+
+
+
+
+**Component Architecture:**
+
+```mermaid
+graph TD
+    C0[app (UI page)]
+    C1[app/api (grouped API routes)]
+    C2[config (app.config.ts)]
+    C0 --> C1
+    C1 --> C2
+```
+
+### 🏗️ Architecture
+
+A monolithic Next.js application with a server-rendered UI page and colocated TypeScript API routes; a single shared appConfig centralizes runtime options consumed across the UI and API layers.
+
+### 💡 Use Cases
+
+- ✦ Interactive UI for running AI-driven code analysis and viewing results
+- ✦ Applying generated code changes via backend API routes
+- ✦ Streaming code generation to the client for incremental output
+
+
+
+### 🔧 Technologies
+
+
+**Languages:** ![TypeScript: ](https://img.shields.io/badge/TypeScript--blue)
+![Next.js: ](https://img.shields.io/badge/Next.js--blue)
+
+---
+
+## 📑 Documentation Sections
+
+### [app](./app/README.md)
+Contains the Next.js page implementation for the application UI and a nested api directory with grouped TypeScript route implementations for AI-driven code analysis and generation endpoints.
+
+
+This directory holds the root-level Next.
+
+![Files: 1](https://img.shields.io/badge/Files-1-blue)
+
+### [config](./config/README.md)
+Holds the centralized application configuration definitions used to drive feature flags, environment settings, and runtime options across the project.
+
+
+This directory contains TypeScript configuration definitions for the application.
+
+![Files: 1](https://img.shields.io/badge/Files-1-blue)
+
+---
+
+## 📊 Documentation Statistics
+
+- **Files Documented**: 5
+- **Directories**: 7
+- **Coverage**: 100%
+- **Last Updated**: 2026-07-09
+
+---
+
+## 🧭 How to Navigate
+
+> ℹ️ **INFO**
+> Each directory has its own README.md with detailed information about that section. Use the breadcrumb navigation at the top of each page to navigate back to parent directories.
+
+### Navigation Features
+
+- **Breadcrumbs** - At the top of each page, showing your current location
+- **Directory READMEs** - Each folder has a comprehensive overview
+- **File Documentation** - Click through to individual file documentation
+- **Search** - Use GitHub's search or your IDE's search functionality
+
+---
+
+## 🤖 About Woden DocBot
+
+This documentation is automatically generated and kept up-to-date by Woden DocBot, an AI-powered documentation assistant. DocBot analyzes code on every pull request and updates documentation to reflect changes.
+
+### Features
+
+- **Automatic Updates** - Documentation updates on every PR
+- **Comprehensive Coverage** - Files, functions, classes, and directories
+- **Smart Navigation** - Breadcrumbs, related files, and parent links
+- **AI-Powered** - Uses Azure GPT models for intelligent documentation generation
+
+---
+
+*Generated by Woden DocBot for open-lovable*
